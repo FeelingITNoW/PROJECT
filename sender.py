@@ -52,9 +52,9 @@ parameters:
 payload = open(file = filename).read()
 
 print(len(payload))
-"""with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as clientsocket:
+with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as clientsocket:
     clientsocket.connect((TCP_IP_ADDRESS,TCP_PORT_NO))
     clientsocket.send('ID29c4ebac'.encode())
-    transaction_id = clientsocket.recv(8)"""
-
+    transaction_id = clientsocket.recv(8)
+    print(transaction_id)
     Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
