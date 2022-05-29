@@ -3,6 +3,7 @@ import socket
 import argparse
 import getopt
 import sys
+import time 
 
 
 argslist = sys.argv[1:]
@@ -15,13 +16,39 @@ def num_format(i, len):
     return message
 
 
-def send_payload():
-    return
-
+def send_payload(payload, uniqueID, transaction_id):
+    clientsocket.settimeout(1)
+    start_time = time.time()
+    m = len(payload)
+    cwnd = int(m/120)
+    index = 0
+    seq_num = 0
+    messages = []
+    last_acked = -1
+    last = "0"
+    curr_time = time.time() - start_time
+    time_frame = m/120
+    while curr_time < 120:
+        if m - index < cwnd:
+            last = "1"
+        end = min(m, index + cwnd)
+        data = payload[index: end]
+        Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + transaction_id + "LAST" + last + data
+        messages.append(Message)
+        clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
+        try:
+            message, address = clientsocket.recvfrom(1024)
+            index += cwnd
+            curr_time = time.time() - start_time
+            seq_num += 1
+            cwnd +=1
+        except:
+            cwnd /= 2
+            curr_time = time.time() - start_time
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
 filename = ""
-TCP_IP_ADDRESS = ""
-TCP_PORT_NO = ""
+UDP_IP_ADDRESS = ""
+UDP_PORT_NO = ""
 R_PORT_NO = ""
 uniqueID = ""
 
@@ -29,11 +56,11 @@ for i in opts:
     if i[0] == "-f":
         filename = i[1]
     if i[0] == "-a":
-        TCP_IP_ADDRESS = (i[1])
+        UDP_IP_ADDRESS = (i[1])
     if i[0] == "-s":
         R_PORT_NO = int(i[1])
     if i[0] == "-c":
-        TCP_PORT_NO = int(i[1])
+        UDP_PORT_NO = int(i[1])
     if i[0] == "-i":
         uniqueID = i[1]
 
@@ -51,10 +78,15 @@ parameters:
 """
 payload = open(file = filename).read()
 
-print(len(payload))
-with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as clientsocket:
-    clientsocket.connect((TCP_IP_ADDRESS,TCP_PORT_NO))
-    clientsocket.send('ID29c4ebac'.encode())
-    transaction_id = clientsocket.recv(8)
-    print(transaction_id)
-    Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
+
+clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
+clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
+
+transaction_id, addr = clientsocket.recvfrom(1024)
+print(transaction_id)
+send_payload(payload, uniqueID= uniqueID, transaction_id= transaction_id)
+#Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
+
+
+
