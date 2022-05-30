@@ -5,7 +5,6 @@ import getopt
 import sys
 import time 
 
-argslist = sys.argv[1:]
 
 def num_format(i, length):
     message = str(i)
@@ -16,7 +15,7 @@ def num_format(i, length):
 
 
 def send_payload(clientsocket, payload, uniqueID, transaction_id):
-    clientsocket.settimeout(1)
+    
     start_time = time.time()
     m = len(payload)
     cwnd = int(m/120)
@@ -81,12 +80,15 @@ payload = open(file = filename).read()
 print(payload)
 
 clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+clientsocket.settimeout(1)
+argslist = sys.argv[1:]
 clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
 clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
 
 print(transaction_id)
+transaction_id = transaction_id.decode('utf-8')
 send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
 #Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
 
