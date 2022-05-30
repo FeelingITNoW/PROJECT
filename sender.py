@@ -85,7 +85,7 @@ clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
 clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
-transaction_id = "000001"
+
 print(transaction_id)
 send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
 #Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
