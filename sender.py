@@ -35,18 +35,22 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + transaction_id + "LAST" + last + data
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
-        print(Message)
+       #print(Message)
 
         try:
-            message, address = clientsocket.recvfrom(1024)
-            message = message.decode()
-            print(message)
-            index += cwnd
-            curr_time = time.time() - start_time
-            seq_num += 1
-            cwnd +=1
+            servermessage, address = clientsocket.recvfrom(1024)
+            servermessage = servermessage.decode()
+            print(servermessage)
+            if servermessage[0:2] == "ACK":
+
+                index += cwnd
+                curr_time = time.time() - start_time
+                seq_num += 1
+                cwnd +=1
+            else:
+                cwnd = (cwnd/2)
         except socket.timeout:
-            cwnd /= 2
+            cwnd = (cwnd/2)
             curr_time = time.time() - start_time
 
 
