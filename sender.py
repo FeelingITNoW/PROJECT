@@ -45,7 +45,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             curr_time = time.time() - start_time
             seq_num += 1
             cwnd +=1
-        except socket.timeout():
+        except socket.timeout:
             cwnd /= 2
             curr_time = time.time() - start_time
 
