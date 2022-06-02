@@ -40,9 +40,9 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode()
-            print(servermessage)
-            if servermessage[0:2] == "ACK":
-
+            print(servermessage, servermessage[0:2])
+            if servermessage[0:3] == "ACK":
+                print("Happens")
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
