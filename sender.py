@@ -48,9 +48,10 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd = min(upper_len, int(cwnd*1.5))
+                cwnd = min(int(cwnd*1.5), upper_len)
             else:
-                upper_len = int(((lower_len + upper_len)/2))
+                print(servermessage)
+                upper_len = max(int(upper_len*.75),int(((lower_len + upper_len)/2)))
                 #cwnd = int(cwnd*.75)
                 cwnd = max(lower_len, int(cwnd*.75))
 
