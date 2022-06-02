@@ -25,7 +25,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     last_acked = -1
     last = "0"
     curr_time = time.time() - start_time
-    time_frame = m/120
+    #time_frame = m/120
     while curr_time < 120 and index < m:
         if m - index < cwnd:
             last = "1"
@@ -35,7 +35,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + "TXN" + transaction_id + "LAST" + last + data
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
-       #print(Message)
+        print(Message)
 
         try:
             servermessage, address = clientsocket.recvfrom(1024)
