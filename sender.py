@@ -98,7 +98,9 @@ transaction_id, addr = clientsocket.recvfrom(1024)
 clientsocket.settimeout(1)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
-send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
+if transaction_id != "Existing alive transaction":
+    
+    send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
 #Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
 
 
