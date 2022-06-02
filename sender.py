@@ -106,7 +106,7 @@ clientsocket.sendto('ID29c4ebac'.encode('utf-8'), (UDP_IP_ADDRESS, R_PORT_NO))
 transaction_id, addr = clientsocket.recvfrom(1024)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
-clientsocket.settimeout(5)
+clientsocket.settimeout(10)
 if transaction_id != "Existing alive transaction":
     
     send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
