@@ -18,15 +18,15 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     
     start_time = time.time()
     m = len(payload)
-    cwnd = int(m/60)
+    cwnd = int(m/20)
     index = 0
     seq_num = 0
     messages = []
-    max_len = m
+    upper_len = m
     last = "0"
     curr_time = time.time() - start_time
     #time_frame = m/120
-    longest_known_cwnd = cwnd
+    lower_len = cwnd
     while curr_time < 120 and index < m:
         if m - index < cwnd:
             last = "1"
@@ -37,27 +37,27 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-        print("CWND: ", cwnd, "longest known:", longest_known_cwnd, "max_len:", max_len, "index: ", index)
+        print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode()
             print(servermessage, servermessage[0:2])
             if servermessage[0:3] == "ACK":
                 print("Happens")
-                longest_known_cwnd = cwnd
+                lower_len = cwnd
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd = min(max_len - 1, int(cwnd*1.5))
+                cwnd = min(int((upper_len + lower_len)/2), int(cwnd*1.5))
             else:
-                max_len = int(cwnd/2)
+                upper_len = int(cwnd/2)
                 #cwnd = int(cwnd*.75)
-                cwnd = max(longest_known_cwnd, int(cwnd*.75))
+                cwnd = max(lower_len, int(cwnd*.75))
 
         except socket.timeout:
             print("timeout")
-            max_len = cwnd - 1
-            cwnd = max(longest_known_cwnd, int(cwnd*.75))
+            upper_len = cwnd - 1
+            cwnd = max(lower_len, int(cwnd*.75))
             curr_time = time.time() - start_time
 
 argslist = sys.argv[1:]
