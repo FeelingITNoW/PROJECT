@@ -46,7 +46,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd *=2
+                cwnd +=2
             else:
                 cwnd = max(1, int(cwnd/2))
         except socket.timeout:
@@ -95,7 +95,7 @@ clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
 clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
-clientsocket.settimeout(1)
+#clientsocket.settimeout(1)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
 if transaction_id != "Existing alive transaction":
