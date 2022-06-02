@@ -18,11 +18,11 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     
     start_time = time.time()
     m = len(payload)
-    cwnd = int(m/120)
+    cwnd = int(m/60)
     index = 0
     seq_num = 0
     messages = []
-    last_acked = -1
+    max_len = m
     last = "0"
     curr_time = time.time() - start_time
     #time_frame = m/120
@@ -46,8 +46,10 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd *=2
+                cwnd = min(max_len - 1, cwnd*2)
             else:
+                max_len = cwnd
+                cwnd = int(cwnd*.75)
                 cwnd = max(1, int(cwnd/2))
         except socket.timeout:
             cwnd = int(cwnd/2)
