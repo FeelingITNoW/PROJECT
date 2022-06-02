@@ -51,13 +51,14 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = min(int(cwnd*1.5), upper_len)
             else:
                 print(servermessage)
-                upper_len = max(int(upper_len*.75),lower_len)
+                upper_len = max(int(upper_len*.75),int(.5*(upper_len + lower_len)))
                 #cwnd = int(cwnd*.75)
-                cwnd =  int(cwnd*.75)
+                cwnd =  max(lower_len,int(cwnd*.75))
 
         except socket.timeout:
             print("timeout")
-            upper_len = max(lower_len, upper_len*.75)
+            upper_len = max(int(upper_len*.75),int(.5*(upper_len + lower_len)))
+            cwnd =  max(lower_len,int(cwnd*.75))
             #cwnd = max(lower_len, int(cwnd*.75))
             curr_time = time.time() - start_time
 
@@ -105,6 +106,7 @@ clientsocket.sendto('ID29c4ebac'.encode('utf-8'), (UDP_IP_ADDRESS, R_PORT_NO))
 transaction_id, addr = clientsocket.recvfrom(1024)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
+clientsocket.settimeout(5)
 if transaction_id != "Existing alive transaction":
     
     send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
