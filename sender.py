@@ -53,7 +53,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             cwnd = (cwnd/2)
             curr_time = time.time() - start_time
 
-
+argslist = sys.argv[1:]
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
 filename = ""
 UDP_IP_ADDRESS = ""
