@@ -51,16 +51,17 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = min(int(cwnd*1.5), upper_len)
             else:
                 print(servermessage)
-                upper_len = max(int(upper_len*.75),int(.5*(upper_len + lower_len)))
+                upper_len = cwnd
                 #cwnd = int(cwnd*.75)
                 cwnd =  max(lower_len,int(cwnd*.75))
 
         except socket.timeout:
             print("timeout")
-            upper_len = max(int(upper_len*.75),int(.5*(upper_len + lower_len)))
+            upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
             #cwnd = max(lower_len, int(cwnd*.75))
-            curr_time = time.time() - start_time
+            curr_time = time.time() - curr_time
+            clientsocket.settimeout(curr_time)
 
 argslist = sys.argv[1:]
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
