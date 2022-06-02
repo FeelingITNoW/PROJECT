@@ -36,15 +36,20 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
+
         try:
             message, address = clientsocket.recvfrom(1024)
+            message = message.decode()
+            print(message)
             index += cwnd
             curr_time = time.time() - start_time
             seq_num += 1
             cwnd +=1
-        except:
+        except socket.timeout():
             cwnd /= 2
             curr_time = time.time() - start_time
+
+
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
 filename = ""
 UDP_IP_ADDRESS = ""
