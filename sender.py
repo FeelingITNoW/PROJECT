@@ -36,7 +36,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-
+        print("CWND: ", cwnd)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode()
@@ -52,7 +52,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = int(cwnd*.75)
                 cwnd = max(1, int(cwnd/2))
         except socket.timeout:
-            cwnd = int(cwnd/2)
+            cwnd = int(cwnd*.75)
             curr_time = time.time() - start_time
 
 argslist = sys.argv[1:]
