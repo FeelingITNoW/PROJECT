@@ -35,7 +35,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         #print(data)
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + "TXN" + transaction_id + "LAST" + last + data
         messages.append(Message)
-        clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
+        clientsocket.sendto((Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
         print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
         try:
@@ -48,9 +48,9 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd = min(int((upper_len + lower_len)/2), int(cwnd*1.5))
+                cwnd = min(upper_len, int(cwnd*1.5))
             else:
-                upper_len = int(cwnd/2)
+                upper_len = int(((lower_len + upper_len)/2))
                 #cwnd = int(cwnd*.75)
                 cwnd = max(lower_len, int(cwnd*.75))
 
