@@ -46,9 +46,9 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd +=1
+                cwnd *=2
             else:
-                cwnd = int(cwnd/2)
+                cwnd = max(1, int(cwnd/2))
         except socket.timeout:
             cwnd = int(cwnd/2)
             curr_time = time.time() - start_time
