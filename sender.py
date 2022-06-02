@@ -27,7 +27,6 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     curr_time = time.time() - start_time
     #time_frame = m/120
     longest_known_cwnd = cwnd
-    longest_rejected = m
     while curr_time < 120 and index < m:
         if m - index < cwnd:
             last = "1"
@@ -51,12 +50,13 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 seq_num += 1
                 cwnd = min(max_len - 1, int(cwnd*1.5))
             else:
-                max_len = cwnd-1
+                max_len = int(cwnd/2)
                 #cwnd = int(cwnd*.75)
                 cwnd = max(longest_known_cwnd, int(cwnd*.75))
 
         except socket.timeout:
             print("timeout")
+            max_len = cwnd - 1
             cwnd = max(longest_known_cwnd, int(cwnd*.75))
             curr_time = time.time() - start_time
 
