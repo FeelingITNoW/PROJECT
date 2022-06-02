@@ -26,6 +26,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     last = "0"
     curr_time = time.time() - start_time
     #time_frame = m/120
+    longest_known_cwnd = cwnd
     while curr_time < 120 and index < m:
         if m - index < cwnd:
             last = "1"
@@ -36,23 +37,26 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-        print("CWND: ", cwnd)
+        print("CWND: ", cwnd, "longest known:", longest_known_cwnd, "max_len:", max_len)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode()
             print(servermessage, servermessage[0:2])
             if servermessage[0:3] == "ACK":
                 print("Happens")
+                longest_known_cwnd = cwnd
                 index += cwnd
                 curr_time = time.time() - start_time
                 seq_num += 1
-                cwnd = min(max_len - 1, cwnd*2)
+                cwnd = min(max_len - 1, int(cwnd*1.5))
             else:
-                max_len = cwnd
+                max_len = cwnd-1
                 #cwnd = int(cwnd*.75)
-                cwnd = max(1, int(cwnd*.75))
+                cwnd = max(longest_known_cwnd, int(cwnd*.75))
+
         except socket.timeout:
-            cwnd = int(cwnd*.75)
+            print("timeout")
+            max(longest_known_cwnd, int(cwnd*.75))
             curr_time = time.time() - start_time
 
 argslist = sys.argv[1:]
@@ -97,7 +101,7 @@ clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
 clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
-#clientsocket.settimeout(1)
+clientsocket.settimeout(2)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
 if transaction_id != "Existing alive transaction":
