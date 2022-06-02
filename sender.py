@@ -34,14 +34,14 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         data = payload[index: end]
         #print(data)
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + "TXN" + transaction_id + "LAST" + last + data
-        messages.append(Message)
-        clientsocket.sendto((Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
+        Message = Message.encode('utf-8')
+        clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
         print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
-            servermessage = servermessage.decode()
-            print(servermessage, servermessage[0:2])
+            servermessage = servermessage.decode('utf-8')
+            print(servermessage)
             if servermessage[0:3] == "ACK":
                 print("Happens")
                 lower_len = cwnd
@@ -51,7 +51,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = min(int(cwnd*1.5), upper_len)
             else:
                 print(servermessage)
-                upper_len = max(int(upper_len*.75),int(((lower_len + upper_len)/2)))
+                upper_len = max(int(upper_len*.75),lower_len)
                 #cwnd = int(cwnd*.75)
                 cwnd = max(lower_len, int(cwnd*.75))
 
@@ -100,7 +100,7 @@ clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientsocket.settimeout(10)
 argslist = sys.argv[1:]
 clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
-clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
+clientsocket.sendto('ID29c4ebac'.encode('utf-8'), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
 print(transaction_id)
