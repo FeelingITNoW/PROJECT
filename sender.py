@@ -38,7 +38,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         messages.append(Message)
         clientsocket.sendto(str(Message).encode(), (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-        print("CWND: ", cwnd, "longest known:", longest_known_cwnd, "max_len:", max_len)
+        print("CWND: ", cwnd, "longest known:", longest_known_cwnd, "max_len:", max_len, "index: ", index)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode()
@@ -102,7 +102,6 @@ clientsocket.bind(('',UDP_PORT_NO)) #my port sa email
 clientsocket.sendto('ID29c4ebac'.encode(), (UDP_IP_ADDRESS, R_PORT_NO))
 
 transaction_id, addr = clientsocket.recvfrom(1024)
-clientsocket.settimeout(5)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
 if transaction_id != "Existing alive transaction":
