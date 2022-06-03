@@ -26,7 +26,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     last = "0"
     curr_time = time.time() - start_time
     #time_frame = m/120
-    lower_len = cwnd
+    lower_len = cwnd/2
     while index < m:
         if m - index < cwnd:
             last = "1"
