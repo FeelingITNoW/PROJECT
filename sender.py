@@ -27,7 +27,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     curr_time = time.time() - start_time
     #time_frame = m/120
     lower_len = cwnd
-    while curr_time < 120 and index < m:
+    while index < m:
         if m - index < cwnd:
             last = "1"
         end = min(m, index + cwnd)
@@ -47,10 +47,10 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 print("Happens")
                 lower_len = cwnd
                 index += cwnd
-                curr_time = time.time() - curr_time
+               
                 seq_num += 1
                 cwnd = min(int(cwnd*1.5), upper_len)
-                print(curr_time)
+                
                 
             else:
                 print(servermessage)
@@ -63,7 +63,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
             #cwnd = max(lower_len, int(cwnd*.75))
-            curr_time = time.time() - curr_time
+            
         
 argslist = sys.argv[1:]
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
