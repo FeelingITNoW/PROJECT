@@ -15,7 +15,7 @@ def num_format(i, length):
 
 
 def send_payload(clientsocket, payload, uniqueID, transaction_id):
-    
+    curr_time_limit = 10
     start_time = time.time()
     m = len(payload)
     cwnd = int(m/20)
@@ -26,7 +26,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     last = "0"
     curr_time = time.time() - start_time
     #time_frame = m/120
-    lower_len = cwnd/2
+    lower_len = int(cwnd/2)
     while index < m:
         send_time = time.time()
         if m - index < cwnd:
@@ -41,7 +41,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
         #print(hashlib.md5(Message.encode('utf-8')))
-        print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index, "curr time", curr_time)
+        print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index, "curr time", curr_time, "time limit", curr_time_limit )
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode('utf-8')
@@ -55,7 +55,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = min(int(cwnd*1.5), int((upper_len+lower_len)/2))
                 recv_time = time.time() - send_time
                 print(recv_time)
-                
+                curr_time_limit = min((recv_time + 2), curr_time_limit)
+                clientsocket.settimeout(curr_time_limit)
             else:
                 print(servermessage)
                 upper_len = cwnd
