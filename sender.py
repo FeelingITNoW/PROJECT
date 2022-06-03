@@ -40,7 +40,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
         #print(hashlib.md5(Message.encode('utf-8')))
-        print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
+        print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index, "curr time", curr_time)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
             servermessage = servermessage.decode('utf-8')
@@ -65,7 +65,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
             #cwnd = max(lower_len, int(cwnd*.75))
-            
+        curr_time = time.time() - start_time
         
 argslist = sys.argv[1:]
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
