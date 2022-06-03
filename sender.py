@@ -28,6 +28,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     #time_frame = m/120
     lower_len = cwnd/2
     while index < m:
+        send_time = time.time()
         if m - index < cwnd:
             last = "1"
         end = min(m, index + cwnd)
@@ -52,7 +53,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                
                 seq_num += 1
                 cwnd = min(int(cwnd*1.5), int((upper_len+lower_len)/2))
-                
+                recv_time = time.time() - send_time
+                print(recv_time)
                 
             else:
                 print(servermessage)
