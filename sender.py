@@ -55,7 +55,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                
                 seq_num += 1
-                cwnd = min(int(cwnd*1.5), int((upper_len+cwnd)/2))
+                cwnd = max(min(int(cwnd*1.5), int((upper_len+cwnd)/2)),lower_len)
                 recv_time = time.time() - send_time
                 print(recv_time)
                 curr_time_limit = min((recv_time + 1.2), curr_time_limit)
