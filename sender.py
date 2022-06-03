@@ -27,7 +27,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     curr_time = time.time() - start_time
     #time_frame = m/120
     lower_len = int(cwnd/2)
-    while index < m:
+    while index < m and curr_time < 123:
         send_time = time.time()
         if m - index < cwnd:
             last = "1"
@@ -73,8 +73,9 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
              #handle case of initial test failing
             if (time.time() - start_time ) < 15:
                 upper_len = int(cwnd*.9)
-                lower_len = int(lower_len/2)
                 cwnd = lower_len
+                lower_len = int(lower_len*.75)
+                
                 
             #cwnd = max(lower_len, int(cwnd*.75))
         curr_time = time.time() - start_time
