@@ -73,7 +73,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             #handle case of initial test failing
             if (time.time() - start_time ) < 15:
                 upper_len = cwnd
-                cwnd = int((lower_len + cwnd)/2)
+                cwnd = int((cwnd)*.9)
                 lower_len = int(lower_len*.75)
                 clientsocket.settimeout(7)
                 
