@@ -72,8 +72,10 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             cwnd =  max(lower_len,int(cwnd*.75))
              #handle case of initial test failing
             if (time.time() - start_time ) < 15:
+                upper_len = int(cwnd*.9)
                 lower_len = int(lower_len/2)
                 cwnd = lower_len
+                
             #cwnd = max(lower_len, int(cwnd*.75))
         curr_time = time.time() - start_time
         
