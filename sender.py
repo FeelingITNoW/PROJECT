@@ -62,7 +62,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 upper_len = cwnd
                 #cwnd = int(cwnd*.75)
                 cwnd =  max(lower_len,int(cwnd*.75))
-
+                if lower_len == int(m/20):
+                    lower_len *= .9
         except socket.timeout:
             print("timeout")
             upper_len = cwnd
