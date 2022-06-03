@@ -37,7 +37,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         Message = Message.encode('utf-8')
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-        print(hashlib.md5(Message.encode('utf-8')))
+        #print(hashlib.md5(Message.encode('utf-8')))
         print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
