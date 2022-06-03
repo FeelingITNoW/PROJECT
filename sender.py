@@ -33,6 +33,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         end = min(m, index + cwnd)
         data = payload[index: end]
         #print(data)
+        if upper_len - lower_len < int(m/20):
+            upper_len = lower_len
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + "TXN" + transaction_id + "LAST" + last + data
         Message = Message.encode('utf-8')
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
