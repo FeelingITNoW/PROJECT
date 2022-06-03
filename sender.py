@@ -66,10 +66,14 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                     lower_len *= .75
         except socket.timeout:
             print("timeout")
-            if lower_len == int(m/40):
-                    lower_len *= .75
+           
+            
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
+             #handle case of initial test failing
+            if (time.time() - start_time ) < 15:
+                lower_len = int(lower_len/2)
+                cwnd = lower_len
             #cwnd = max(lower_len, int(cwnd*.75))
         curr_time = time.time() - start_time
         
