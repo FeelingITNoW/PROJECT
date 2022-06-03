@@ -31,11 +31,14 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         send_time = time.time()
         if m - index < cwnd:
             last = "1"
-        end = min(m, index + cwnd)
-        data = payload[index: end]
+        
         #print(data)
         if upper_len - lower_len < int(m/30):
             upper_len = lower_len
+            cwnd = lower_len
+
+        end = min(m, index + cwnd)
+        data = payload[index: end]
         Message = "ID" + uniqueID + "SN" + num_format(seq_num, 7) + "TXN" + transaction_id + "LAST" + last + data
         Message = Message.encode('utf-8')
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
