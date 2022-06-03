@@ -35,7 +35,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         #print(data)
         if upper_len - lower_len < int(m/30):
             upper_len = lower_len
-            cwnd = lower_len
+        
 
         end = min(m, index + cwnd)
         data = payload[index: end]
@@ -60,6 +60,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 print(recv_time)
                 curr_time_limit = min((recv_time + 1.2), curr_time_limit)
                 clientsocket.settimeout(curr_time_limit)
+                if upper_len - lower_len < int(m/30):
+                    upper_len = lower_len
             else:
                 print(servermessage)
                 upper_len = cwnd
