@@ -49,7 +49,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                
                 seq_num += 1
-                cwnd = min(int(cwnd*1.5), upper_len)
+                cwnd = min(int(cwnd*1.5), int((upper_len+lower_len)/2))
                 
                 
             else:
