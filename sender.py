@@ -4,7 +4,7 @@ import argparse
 import getopt
 import sys
 import time 
-
+import hashlib
 
 def num_format(i, length):
     message = str(i)
@@ -37,7 +37,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
         Message = Message.encode('utf-8')
         clientsocket.sendto(Message, (UDP_IP_ADDRESS, R_PORT_NO))
         print(Message)
-        
+        print(hashlib.md5(packet.encode('utf-8')))
         print("CWND: ", cwnd, "longest known:", lower_len, "max_len:", upper_len, "index: ", index)
         try:
             servermessage, address = clientsocket.recvfrom(1024)
@@ -64,7 +64,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             cwnd =  max(lower_len,int(cwnd*.75))
             #cwnd = max(lower_len, int(cwnd*.75))
             curr_time = time.time() - curr_time
-        clientsocket.settimeout(curr_time + 1)
+        
 argslist = sys.argv[1:]
 opts,args = getopt.getopt(argslist, 'f:a:s:c:i:')
 filename = ""
@@ -111,7 +111,6 @@ print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
 clientsocket.settimeout(10)
 if transaction_id != "Existing alive transaction":
-    
     send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
 #Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
 
