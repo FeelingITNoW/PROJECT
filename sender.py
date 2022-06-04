@@ -25,9 +25,11 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     upper_len = m
     last = "0"
     curr_time = time.time() - start_time
-    #time_frame = m/120
+    
     lower_len = int(cwnd/2)
     init_guess = True
+
+    
     while index < m and curr_time < 123:
         send_time = time.time()
         if m - index < cwnd:
@@ -56,13 +58,24 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 index += cwnd
                 init_guess = False
                 seq_num += 1
-                cwnd = max(min(int(cwnd*1.5), int((upper_len+cwnd)/2)),lower_len)
                 recv_time = time.time() - send_time
+                curr_time = time.time() - start_time
+                if (cwnd * ((120-curr_time)/(recv_time+1))) > (m - index):
+                    upper_len = cwnd
+                    lower_len = cwnd
+                
+                cwnd = max(min(int(cwnd*1.5), int((upper_len+cwnd)/2)),lower_len)
+                
                 print(recv_time)
                 curr_time_limit = min((recv_time + 1.2), curr_time_limit)
+                
                 clientsocket.settimeout(curr_time_limit)
                 if upper_len - lower_len < int(m/30):
                     upper_len = lower_len
+                if (cwnd * ((120-time.time())/(recv_time+1))) > (m - index):
+                    upper_len = cwnd
+                    lower_len = cwnd
+                
             else:
                 print(servermessage)
                 upper_len = cwnd
@@ -76,7 +89,8 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
-            
+            curr_time_limit+=2
+            clientsocket.settimeout(curr_time_limit)
             #handle case of initial test failing
             if init_guess:
                 upper_len = cwnd
