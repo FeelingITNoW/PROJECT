@@ -80,7 +80,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 upper_len = cwnd
                 cwnd = int((cwnd)*.9)
                 lower_len = int(lower_len*.75)
-                clientsocket.settimeout(7)
+                #clientsocket.settimeout(7)
                 
             #cwnd = max(lower_len, int(cwnd*.75))
         curr_time = time.time() - start_time
