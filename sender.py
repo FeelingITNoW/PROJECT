@@ -27,6 +27,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
     curr_time = time.time() - start_time
     #time_frame = m/120
     lower_len = int(cwnd/2)
+    init_guess = True
     while index < m and curr_time < 123:
         send_time = time.time()
         if m - index < cwnd:
@@ -53,7 +54,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 print("Happens")
                 lower_len = cwnd
                 index += cwnd
-               
+                init_guess = False
                 seq_num += 1
                 cwnd = max(min(int(cwnd*1.5), int((upper_len+cwnd)/2)),lower_len)
                 recv_time = time.time() - send_time
@@ -76,10 +77,10 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
             #handle case of initial test failing
-            if (time.time() - start_time ) < 15:
+            if init_guess:
                 upper_len = cwnd
-                cwnd = int((cwnd)*.9)
-                lower_len = int(lower_len*.75)
+                cwnd = max(1,int((cwnd)*.9))
+                lower_len = max(1,int(lower_len*.75))
                 #clientsocket.settimeout(7)
                 
             #cwnd = max(lower_len, int(cwnd*.75))
