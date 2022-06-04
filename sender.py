@@ -15,7 +15,7 @@ def num_format(i, length):
 
 
 def send_payload(clientsocket, payload, uniqueID, transaction_id):
-    curr_time_limit = 20
+    curr_time_limit = 12
     start_time = time.time()
     m = len(payload)
     cwnd = int(m/20)
@@ -83,10 +83,9 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 cwnd = max(1,int((cwnd)*.9))
                 lower_len = max(1,int(lower_len*.75))
                 #clientsocket.settimeout(7)
-                curr_time_limit+=5
+               
 
-            curr_time_limit += 5
-            clientsocket.settimeout(curr_time_limit)
+           
             #cwnd = max(lower_len, int(cwnd*.75))
         curr_time = time.time() - start_time
         
@@ -134,7 +133,7 @@ clientsocket.sendto('ID29c4ebac'.encode('utf-8'), (UDP_IP_ADDRESS, R_PORT_NO))
 transaction_id, addr = clientsocket.recvfrom(1024)
 print(transaction_id)
 transaction_id = transaction_id.decode('utf-8')
-clientsocket.settimeout(20)
+clientsocket.settimeout(12)
 if transaction_id != "Existing alive transaction":
     send_payload(clientsocket, payload = payload, uniqueID= uniqueID, transaction_id= transaction_id)
 #Message = "ID" + uniqueID + "SN" + seqnum + transaction_id + "LAST" + last + data
