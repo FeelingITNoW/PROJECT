@@ -75,7 +75,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
                 if (cwnd * ((120-time.time())/(recv_time+1))) > (m - index):
                     upper_len = cwnd
                     lower_len = cwnd
-                
+                    print("I WILL MAKE IT IN TIME!!!")
             else:
                 print(servermessage)
                 upper_len = cwnd
