@@ -76,7 +76,7 @@ def send_payload(clientsocket, payload, uniqueID, transaction_id):
             
             upper_len = cwnd
             cwnd =  max(lower_len,int(cwnd*.75))
-            curr_time_limit + 1
+            curr_time_limit += 5
             clientsocket.settimeout(curr_time_limit)
             #handle case of initial test failing
             if init_guess:
